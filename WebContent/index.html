@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>扫码登录</title>
+<script type="text/javascript" src="static/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="static/jquery.qrcode.min.js"></script>
+</head>
+<body style="text-align: center;background-image: url('static/bg.jpg');background-repeat: no-repeat;" >
+	<font style="color:#FF9001;font-weight: bold;">扫码登录</font><br/>
+	<div style="margin-top: 150px;" class="qrcodediv"></div>
+</body>
+<script type="text/javascript">
+	!function(){
+		$("body").css("backgroundSize","100% "+$(window).height()+"px")
+		 var k = uuid();
+		 var content;
+		 if(/\.html/.test(location)){
+			 content = location.href.replace("index","waplogin")+"?k="+k;
+		 }else{
+			 content = location.href+"waplogin.html?k="+k;
+		 }
+		 console.dir(content);
+		 $('.qrcodediv').qrcode({render:"canvas",width:200,height:200,correctLevel:0,text:content,background:"#ffffff",foreground:"#FF9001"});  
+		 function uuid() {
+			    var s = [];
+			    var hexDigits = "0123456789abcdef";
+			    for (var i = 0; i < 36; i++) {
+			        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+			    }
+			    s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+			    s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+			    s[8] = s[13] = s[18] = s[23] = "";
+			    var uuid = s.join("");
+			    return uuid;
+		}
+		var evtSource = new EventSource("conn?k="+k);
+		evtSource.addEventListener("ready", function (e) {
+			//close后就不自动重连了，否则就算服务器端对应的方法走完了，还会重新建立连接额
+			evtSource.close();
+			location.href = "ui";
+	    }, false );
+	}();
+</script>
+</html>

@@ -1,0 +1,133 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<title>登录</title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes">
+<link type="text/css" rel="stylesheet"
+	href="static/css/style.css" />
+<link type="text/css" rel="stylesheet"
+	href="static/css/login.css" />
+<link type="text/css" rel="stylesheet"
+	href="static/css/index.css" />
+<script type="text/javascript"
+	src="http://api.map.baidu.com/api?v=2.0&ak=D55c6497cce508780a3cb32ed80fed53"></script>
+	<script type="text/javascript" src="static/jquery-1.4.4.min.js"></script>
+
+<style>
+.login_in input[type="button"], .login_in input[type="submit"] {
+	width: 100%;
+	height: 35px;
+	font-size: 14px;
+	color: #ffffff;
+	text-align: center;
+	line-height: 35px;
+	border: 0;
+	margin-top: 25px;
+	background-color: #484848;
+	cursor: pointer;
+}
+
+.login_in .errorTips {
+	width: 215px;
+	color: red;
+	margin: 10px auto;
+}
+</style>
+</head>
+<body class="login">
+	<header>
+		<div class="login_header">
+			<a href="javascript:;" class="cat_back"
+				onclick="window.history.back()"></a>
+			<div class="cat_name">登录</div>
+			<div class="icons">
+				<a href="javascript:void(0);" class="list_on"></a>
+			</div>
+		</div>
+	</header>
+	<section>
+		<!--login-->
+		<div class="login_icon"></div>
+
+		<div class="login_in">
+			<form action="wlogin" method="post">
+				<input type="hidden" name="location" id="location" value="用户未提供" />
+				<input type="hidden" name="k" id="k" /> <input type="text"
+					name="account" id="account" placeholder="输入用户名" class="g_username" />
+				<input type="password" class="login_pwd" name="password"
+					id="password" placeholder="输入密码" /> <input type="submit"
+					class="login_sbt" name="loginsubmit" value="登 录" " />
+			</form>
+			<div id="errorTips" class="errorTips"></div>
+		</div>
+		<!--社交-->
+
+		<div class="margin_50"></div>
+		<div class="bottom_bar">
+			<a href="javascript:void(0)" id="do_review" class="do_review"></a> <a
+				href="http://m.onlylady.com/" id="do_home" class="do_home"></a> <a
+				href="/login/" id="do_user" class="do_user active"></a>
+		</div>
+	</section>
+	<center>
+		<div style="font-size: 10px">
+			Copyright&copy;一起奋斗 All Rights Reserved (2013-2015) 版权所有
+	</center>
+
+	<script type="text/javascript">
+		(function() {
+			function qs(name) {
+				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+				var r = window.location.search.substr(1).match(reg);
+				if (r != null)
+					return unescape(r[2]);
+				return null;
+			}
+			document.getElementById("k").value = qs("k");
+		})();
+	
+	
+		if (window.navigator.geolocation) {
+			var options = {
+				enableHighAccuracy : true,
+			};
+			window.navigator.geolocation.getCurrentPosition(handleSuccess,
+					handleError, options);
+		} else {
+			alert("浏览器不支持html5来获取地理位置信息");
+		}
+		
+		function handleSuccess(position) {
+			// 获取到当前位置经纬度  本例中是chrome浏览器取到的是google地图中的经纬度
+			var lng = position.coords.longitude;
+			var lat = position.coords.latitude;
+			// 调用百度地图api显示
+			var map = new BMap.Map("allmap");
+			var ggPoint = new BMap.Point(lng, lat);
+			var convertor = new BMap.Convertor();
+			var pointArr = [];
+			pointArr.push(ggPoint);
+			convertor.translate(pointArr, 1, 5, function(data) {
+				if (data.status === 0) {
+					var geoc = new BMap.Geocoder();
+					geoc.getLocation(data.points[0], function(rs){
+						var addComp = rs.addressComponents;
+						console.dir(addComp);
+						$("#location").val(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
+						//alert(addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber);
+					});  
+				}
+			})
+		}
+		function handleError(error) {
+
+		}
+	</script>
+	<div id="allmap" style="display: none;"></div>
+</body>
+</html>

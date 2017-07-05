@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>监控页面</title>
+<script type="text/javascript" src="static/jquery-1.4.4.min.js"></script>
+</head>
+<body style="text-align: center;">
+	扫码监控页面
+	<div id="content"></div>
+</body>
+<script type="text/javascript">
+	!function(){
+		var evtSource = new EventSource("monitor");
+		evtSource.onmessage = function(e) {
+			  document.getElementById("content").innerHTML = e.data;
+		}
+	}();
+</script>
+</html>
